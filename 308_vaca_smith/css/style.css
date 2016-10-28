@@ -1,0 +1,290 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+    margin-top: -1px;
+    background-image: url(../images/wov.jpg);
+    background-repeat: repeat;
+}
+
+#container {
+	background-color: #ffebca;
+	width: 1100px;
+	margin: 0 auto;
+}
+
+img.header {
+	width: 100%;
+}
+
+img.logo {
+	position: relative;
+	width: 200px;
+	height: 200px;
+	left: 640px;
+	z-index: 2;
+}
+
+
+section {
+	padding: 20px;
+	clear: both;
+}
+
+h2 {
+	font-family: Crushed;
+	margin-bottom: -8px;
+}
+
+h2.about {
+	font-family: Crushed;
+	letter-spacing: .04em;
+	margin-left: 50px;
+	margin-top: 120px;
+	margin-bottom: -8px;
+}
+
+h2.aboutsecond {
+	font-family: Crushed;
+	letter-spacing: .04em;
+	margin-left: 50px;
+	margin-top: 50px;
+	margin-bottom: -8px;
+}
+
+h2.aboutbottom {
+	font-family: Crushed;
+	letter-spacing: .04em;
+	margin-left: 60px;
+	margin-top: 90px;
+	margin-bottom: 10px;
+}
+
+h2.booking {
+	font-family: Crushed;
+	margin-bottom: -8px;
+	margin-left: 20px;
+}
+
+h2.oc {
+	font-family: Crushed;
+	letter-spacing: .04em;
+	margin-left: 50px;
+	margin-bottom: -8px;
+}
+
+h2.home {
+	font-family: Crushed;
+	text-align: center;
+	letter-spacing: .04em;
+	margin-bottom: -8px;
+}
+
+p.home {
+	font-family: "Roboto Slab";
+	font-weight: 300;
+	font-size: .9em;
+	letter-spacing: .03em;
+	text-align: left;
+	padding-left: 175px;
+}
+
+p {
+	font-family: "Roboto Slab";
+	width: 70%;
+	font-weight: 300;
+	font-size: .9em;
+	letter-spacing: .03em;
+}
+
+p.about {
+	font-family: "Roboto Slab";
+	width: 50%;
+	font-weight: 300;
+	font-size: .9em;
+	letter-spacing: .03em;
+	margin-left: 50px;
+}
+
+p.oc {
+	font-family: "Roboto Slab";
+	width: 50%;
+	font-weight: 300;
+	font-size: .9em;
+	letter-spacing: .03em;
+	margin-left: 50px;
+}
+
+p.oo {
+	font-family: "Roboto Slab";
+	width: 50%;
+	font-weight: 300;
+	font-size: .9em;
+	letter-spacing: .03em;
+	margin-left: 130px;
+}
+
+p.wp {
+	font-family: "Roboto Slab";
+	width: 33%;
+	font-weight: 300;
+	font-size: .9em;
+	letter-spacing: .03em;
+	margin-left: 130px;
+}
+
+p.book {
+	font-family: "Roboto Slab";
+}
+
+h2.oo {
+	font-family: Crushed;
+	letter-spacing: .04em;
+	margin-left: 70px;
+	margin-bottom: 30px;
+}
+
+h2.oofirst {
+	font-family: Crushed;
+	letter-spacing: .04em;
+	margin-left: 70px;
+	margin-bottom: 30px;
+	margin-top: 70px;
+}
+
+
+h3.oo {
+	font-family: Crushed;
+	letter-spacing: .04em;
+	margin-left: 110px;
+	margin-bottom: -2px;
+	color: #49606e;
+}
+
+
+div aboutimg {
+	float: right;
+	margin: 0 50px 0 30px;
+}
+
+img.logo {
+	position: absolute;
+	float: inherit;
+}
+
+img.about {
+	float: right;
+	clear: right;
+	width: 400px;
+	height: 300px;
+	margin: 100px 30px 30px 30px;
+}
+
+img.att {
+	float: right;
+	margin: 20px 80px 30px 30px;
+	border: 1px solid #49606e;
+	padding: 2px;
+}
+
+div attimg {
+	float: right;
+	position: relative;
+	top: -30px;
+	
+}
+
+section {
+	height: 450px;
+}
+
+section.about {
+	height: 850px;
+}
+
+
+footer {
+	background-color: #5d2d2c;
+	color: white;
+	padding: 20px;
+	clear: both;
+	text-align: center;
+	font-family: "Roboto Slab";
+	font-weight: 200;
+}
+	
+.map {
+	float: right;
+	margin: 0px 70px 50px 0px;
+}
+
+hr {
+	border-top: 3px double #5d2d2c;
+	margin: 0px 30px 0px 30px;
+}
+
+a.about:link  {
+	text-decoration: none;
+	color: #49606e;
+}
+
+a.about:hover {
+	text-decoration: none;
+	color: #6bb3d6;
+}
+
+a.about:visited {
+	text-decoration: none;
+	color: #49606e;
+}
+
+a.about:active {
+	text-decoration: none;
+	color: #6bb3d6;
+}
+
+.button {	
+	font-family: "Roboto Slab";
+	font-weight: 200;	
+    display: inline-block;
+    background-color: #49606e;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 18px;
+    padding: 10px;
+    width: 200px;
+    cursor: pointer;
+    margin: 4px 2px 4px 50px;
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: '»';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.gallery {
+	float: right;
+	position: relative;
+	right: 70px;
+	top: -40px;
+}

@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Booking | Redwood Lodge</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/nav.css">
+<link rel="stylesheet" type="text/css" href="css/photo-viewer.css">
+<link href="https://fonts.googleapis.com/css?family=Crushed|Roboto+Slab:100,300,400" rel="stylesheet">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+</head>
+
+<body>
+
+<div id="container">
+
+<header>
+
+<!--Navigation-->
+
+<div id="nav_wrapper">
+<a href="index.html"><img class="logo" src="images/logo2.png" alt="Redwood Logo"/></a>
+	<nav>
+	<label for="show-menu" class="show-menu">Menu</label>
+	<input type="checkbox" id="show-menu" role="button">	
+		<ul id="menu">
+		<li><a href="index.html">HOME</a></li>
+		<li><a href="about.html">ABOUT</a>
+			<ul class="hidden">
+			</ul>
+		</li>
+		<li>
+			<a href="attractions.html">ATTRACTIONS<span>&#9662;</span></a>
+			<ul class="hidden">
+				<li><a href="waterparks.html">WATER PARKS</a></li>
+				<li><a href="obstaclecourse.html">OBSTACLE COURSES</a></li>
+			</ul>
+		</li>
+		<li><a href="booking.html">BOOKING</a></li>
+	</ul>
+	</nav>
+    
+<!--End Navigation-->
+      
+</header>
+
+<!--Photo Viewer-->
+<section class="page panel">
+      <h2 class="booking">ROOM OPTIONS</h2>
+      <div class="gallerypv">
+        <div id="photo-viewer"></div>
+        <div id="thumbnails">
+          <a href="images/luxury1.jpg" class="thumb active" title="Luxury Suite"><img src="images/thumb1.jpg" alt="Luxury Suite" title="Photo by 
+Echo Valley Ranch, Flickr CC"/></a>
+          <a href="images/luxury2.jpg" class="thumb" title="Luxury Suite"><img src="images/thumb2.jpg" alt="Luxury Suite" title="Photo by 
+Echo Valley Ranch, Flickr CC"/></a>
+          <a href="images/standard1.jpg" class="thumb" title="Standard Suite"><img src="images/thumb3.jpg" alt="Standard Suite" title="Photo by 
+Heritage Hotels & Resorts, Flickr CC"/></a>
+          <a href="images/standard2.jpg" class="thumb" title="Standard Suite"><img src="images/thumb4.jpg" alt="Standard Suite" title="Photo by 
+Heritage Hotels & Resorts, Flickr CC"/></a>
+        </div>
+      </div>
+      <div class="description">
+        <p class="standfirst">Our beautiful rooms will give you a luxurious getaway while allowing you to feel one with nature and be immersed in the beauty of Redwood.</p> <br>
+        <p class="standfirst">All rooms contain a kitchenette, full refrigerator/freezer, pull out couch, television, dresser, closet, and full bathroom. All rooms are smoke free.</p>
+        <br>
+        <p class="book"><a href="#" id="buy">Book Now</a></p>
+      </div>
+    </section>
+
+
+    <script src="js/jquery.js"></script>
+    <script src="js/photo-viewer.js"></script>
+
+<!--End Photo Viewer-->
+
+<footer>
+	<div id="credit">
+	Redwood Lodge
+	</div> <!--end credit div-->
+</footer>
+
+</div>
+</body>
+</html>

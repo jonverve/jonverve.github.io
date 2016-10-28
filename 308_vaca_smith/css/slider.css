@@ -1,0 +1,43 @@
+/********** SLIDER **********/
+.slider {
+  max-width: 1100px;
+  margin: 0px auto -10px auto;
+  width: 100%;
+  z-index: -1;
+  margin-top: -20px;
+  }
+
+.slide-viewer {
+    position: relative; /* needed for IE7 */
+    overflow: hidden;
+    height: 430px;}
+
+.slide-group {
+    width: 100%;
+    height: 100%;
+    position: relative;}
+
+.slide {
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: absolute;}
+
+.slide:first-child {
+    display: block;}
+
+
+/********** BUTTONS **********/
+.slide-buttons {
+  text-align: center;}
+
+.slide-btn {
+  border: none;
+  background: none;
+  color: #d3b281;
+  font-size: 200%;
+  line-height: 0.5em;}
+
+.slide-btn.active, .slide-btn:hover {
+  color: #3e1615;
+  cursor: pointer;}
