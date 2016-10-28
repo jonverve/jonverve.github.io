@@ -1,0 +1,310 @@
+html { 
+	overflow-y: hidden;
+}
+p {
+	font-family: Montserrat, sans-serif;
+	font-size: 12px;
+	text-align: center;
+	text-shadow: 1px 1px 5px #444;
+}
+
+h2 {
+	font-family: Satisfy, cursive;
+	font-size: 60px;
+	text-shadow: 1px 1px 5px #444;
+}
+
+h3 {
+	font-family: Montserrat, sans-serif;
+	font-size: 15px;
+	text-shadow: 1px 1px 5px #444;
+}
+
+#logo {
+	position: absolute;
+	height: 100px;
+	top: 0px;
+	right:0px;
+	z-index: 99;
+	margin-right: 5px;
+	
+}
+
+#slides {
+  position: relative;
+}
+
+.about {
+	 width: 420px;
+  height: 400px;
+  position: relative;
+  left: 5%;
+  top: -10%;
+  padding: 10px;
+  color: #633E57;
+	
+}
+
+.about2 {
+	 width: 420px;
+  height: 400px;
+  position: relative;
+  left: 50%;
+  top: 10%%;
+  padding: 10px;
+  color: #fff;
+	
+}
+
+.first {
+  width: 400px;
+  height: 400px;
+  position: relative;
+  left: 35%;
+  top: 50%;
+  padding: 10px;
+  color: #fff;
+	
+}
+
+.second {
+  width: 400px;
+  height: 400px;
+  position: relative;
+  left: 33%;
+  top: 15%;
+  padding: 10px;
+  color: #fff;
+	
+}
+
+.third {
+  width: 400px;
+  height: 400px;
+  position: relative;
+  left: 6%;
+  top: 15%;
+  padding: 10px;
+  color: #fff;
+}
+.maintext {
+	position:relative;
+	top: 50px;
+	left: 10px;
+}
+
+.secondtext {
+	position: absolute;
+	top: 145px;
+	left: 35px;
+}
+#slides .scrollable {
+  *zoom: 1;
+  position: relative;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+}
+#slides .scrollable:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.slides-navigation {
+  margin: 0 auto;
+  position: absolute;
+  z-index: 3;
+  top: 46%;
+  width: 100%;
+background: none;
+}
+.slides-navigation a {
+  position: absolute;
+  display: block;
+}
+.slides-navigation a.prev {
+  left: 0;
+}
+.slides-navigation a.next {
+  right: 0;
+}
+
+.slides-pagination {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+}
+.slides-pagination a {
+  border-radius: 15px;
+  width: 10px;
+  height: 10px;
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  background-color: rgba(255, 255, 255, 0.5);
+  margin: 2px;
+  margin-bottom: 50px;
+  overflow: hidden;
+  text-indent: -100%;
+}
+.slides-pagination a.current {
+  background: #fff;
+}
+
+.topnav {
+	background-color: #633E57;
+	
+}
+
+
+nav ul {
+	list-style-type:none;
+	margin:0;
+	padding:0;
+	position:absolute;
+	z-index: 10;
+}
+
+nav li {
+	display:inline-block;
+	margin-right: 0;
+}
+
+/* Style for menu links  - Replace the styles of all ul list items with your styles */
+nav li a {
+	display:block;
+	min-width:100%;
+	text-align: center;
+	line-height: 30px;
+	font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+	color: #fff;
+	text-decoration: none;
+	margin: 0 15px 0 15px;
+}
+
+/* Arrow color */
+nav li a span {
+	color:#fff;
+}
+
+/* Hover state for top level links */
+nav li:hover a {
+	background: #633E57;
+	color: #fff;
+}
+
+/* Style for dropdown links */
+nav li:hover ul a {
+	background: rgba(255,255,255,.4);
+	color: #2f3036;
+	height: 30px;
+	text-align: left;
+}
+
+/* Hover state for dropdown links */
+nav li:hover ul a:hover {
+	background: rgba(99,62,87,.4);
+	color: #fff;
+}
+
+/* Hide dropdown links until they are needed */
+nav li ul {
+	display: none;
+}
+
+/* Make dropdown links vertical */
+nav li ul li {
+	display: block;
+	float: none;
+}
+
+/* Controls dropdown links spacing */
+#menu li ul li {
+	margin-bottom: 0;
+}
+
+/* Prevent text wrapping */
+nav li ul li a {
+	width: auto;
+	min-width: 100px;
+	padding: 0 20px;
+}
+
+/* Display the dropdown on hover */
+nav ul li a:hover + .hidden, .hidden:hover {
+	display: block;
+}
+
+/* Style 'show menu' label button and hide it by default */
+.show-menu {
+	font-family: 'Montserrat', sans-serif;
+	text-decoration: none;
+	color: #fff;
+	background: #33202C;
+	text-align: center;
+	padding: 5px 0 6px 0;
+	display: none;
+}
+
+/* Hide checkbox */
+input[type=checkbox]{
+    display: none;
+}
+
+/* Show menu when invisible checkbox is checked */
+input[type=checkbox]:checked ~ #menu{
+    display: block;
+	
+}
+
+
+/* Responsive Styles for Media Queries */
+
+@media screen and (max-width: 549px){
+	/* Make dropdown links appear inline */
+	nav ul {
+		position: static;
+		display: none;
+		width:100%;
+	}
+	/* Create vertical spacing */
+	nav li {
+		margin-bottom: 1px;
+	}
+	/* Make all menu links full width */
+	nav ul li, li a {
+		width: 100%;
+	}
+	nav li a {
+		margin: 0 !important;
+	}
+	/* Display 'show menu' link */
+	.show-menu {
+		display:block;
+	}
+}
+
+@media screen and (min-width: 550px){ 
+	/* After styling your links, figure out the pixel height of your navigation at the desktop view and modify height accordingly.*/
+	#nav_wrapper {
+		width: 100%;
+		background-color: #33202C;
+		height: 30px;
+	}
+	
+	.aboutb {
+		position: absolute;
+		left: 40%;
+		padding: 10px;
+	}
+	
+	

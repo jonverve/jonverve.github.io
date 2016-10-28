@@ -1,0 +1,8 @@
+div.gallery a img {
+	outline: none;
+	border: 1px solid #BBB;
+	padding: 2px;
+	margin: 10px;
+	vertical-align: top;
+}
+
