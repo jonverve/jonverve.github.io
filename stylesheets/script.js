@@ -783,7 +783,9 @@ document.addEventListener('mouseup', handleMouseUp, false);
 
 // Event Listeners
 document.addEventListener("keydown", handleKeyInput);
-document.addEventListener('touchstart', handleTouchStart, false);
-document.addEventListener('touchmove', handleTouchMove, false);
-document.addEventListener('touchend', handleTouchEnd, false);
+
+// Add event listeners with { passive: false }
+document.addEventListener('touchstart', handleTouchStart, { passive: false });
+document.addEventListener('touchmove', handleTouchMove, { passive: false });
+document.addEventListener('touchend', handleTouchEnd, { passive: false });
 
