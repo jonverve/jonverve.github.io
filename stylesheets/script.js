@@ -17,6 +17,11 @@ let touchStartY = 0;
 let touchEndX = 0;
 let touchEndY = 0;
 
+let mouseStartX = 0;
+let mouseStartY = 0;
+let mouseEndX = 0;
+let mouseEndY = 0;
+
 let cheatMode = false;
 let blackHoleAfterSegment = []; // tracks the segment of the worm just before a blackhole, null if the worm not going through blackhole. could be more than 1 segment (array) also used for cheatmode screenwrapping
 let enteredBlackHole = 0; // tracks number of times the worm is through the black hole (could be more than 1)
@@ -692,17 +697,26 @@ function handleKeyInput(event) {
 
 // Touch control handlers
 function handleTouchStart(event) {
+    event.preventDefault(); // Prevent default action	
     touchStartX = event.touches[0].clientX;
     touchStartY = event.touches[0].clientY;
 }
 
 function handleTouchMove(event) {
+    event.preventDefault(); // Prevent default action
     touchEndX = event.changedTouches[0].clientX;
     touchEndY = event.changedTouches[0].clientY;
 }
 
 // Updated touch control functions
 function handleTouchEnd() {
+    event.preventDefault(); // Prevent default action
+	// Unpause the game if it is paused
+    if (isLevelPaused) {
+        isLevelPaused = false;
+        return; // Exit the function to avoid changing the direction if the game was paused
+    }
+	
     const deltaX = touchEndX - touchStartX;
     const deltaY = touchEndY - touchStartY;
     let touchDirection;
@@ -727,6 +741,45 @@ function processDirectionQueue() {
         }
     }
 }
+
+function handleMouseDown(event) {
+    mouseStartX = event.clientX;
+    mouseStartY = event.clientY;
+}
+
+function handleMouseMove(event) {
+    // You might not need to handle mousemove unless you want real-time tracking
+}
+
+function handleMouseUp(event) {
+    // Unpause the game if it is paused
+    if (isLevelPaused) {
+        isLevelPaused = false;
+        return; // Exit the function to avoid changing the direction if the game was paused
+    }
+	
+    mouseEndX = event.clientX;
+    mouseEndY = event.clientY;
+
+    const deltaX = mouseEndX - mouseStartX;
+    const deltaY = mouseEndY - mouseStartY;
+
+    let mouseDirection;
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal movement
+        mouseDirection = deltaX > 0 ? directions['ArrowRight'] : directions['ArrowLeft'];
+    } else {
+        // Vertical movement
+        mouseDirection = deltaY > 0 ? directions['ArrowDown'] : directions['ArrowUp'];
+    }
+
+    changeDirection(mouseDirection);
+}
+
+// Add event listeners for mouse
+document.addEventListener('mousedown', handleMouseDown, false);
+document.addEventListener('mousemove', handleMouseMove, false);
+document.addEventListener('mouseup', handleMouseUp, false);
 
 // Event Listeners
 document.addEventListener("keydown", handleKeyInput);
