@@ -37,7 +37,7 @@ canvas {
 	margin: 0 auto;
 	text-align: center;
 }
-
+/*
 #gameScreen {
     display: flex;
     flex-direction: column;
@@ -45,7 +45,7 @@ canvas {
     justify-content: center;
     position: relative;
 }  
-
+*/
 
 
 /* Define color variables based on the color analysis */
@@ -149,13 +149,12 @@ button:hover {
 
 
 @media screen and (max-width: 600px) {
-    /* Adjust styles for smaller screens... */
-
     #gameCanvas {
-        width: 100vw; /* Full viewport width */
-        height: 100vh; /* Full viewport height */
-        max-height: 100vh; /* Maximum height */
-        object-fit: cover; /* Cover the whole viewport without distorting aspect ratio */
+        width: 100vw; /* Set width to full viewport width */
+        height: auto; /* Set height to auto to maintain aspect ratio */
+        max-width: 100%; /* Ensure it doesn't overflow width */
+        max-height: 100vh; /* Maximum height based on viewport */
+        object-fit: contain; /* Fit the content within the element's box */
     }
 
     /* Styles for touchControls... */

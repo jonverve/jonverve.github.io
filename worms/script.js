@@ -151,13 +151,17 @@ function startGame(selectedDifficulty) {
 }
 
 function adjustCanvasSize() {
-    if (window.innerWidth <= 600) {
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+
+    if (screenWidth <= 600) {  // Using screenWidth for mobile detection
         // Find the best fitting cellSize for the viewport
-        const maxCellsFitWidth = Math.floor(window.innerWidth / cellSize);
-        const maxCellsFitHeight = Math.floor(window.innerHeight / cellSize);
+        const maxCellsFitWidth = Math.floor(screenWidth / cellSize);
+        const maxCellsFitHeight = Math.floor(screenHeight / cellSize);
         const minCellsFit = Math.min(maxCellsFitWidth, maxCellsFitHeight);
 
-        cellSize = Math.floor(Math.min(window.innerWidth, window.innerHeight) / minCellsFit);
+        cellSize = Math.floor(Math.min(screenWidth, screenHeight) / minCellsFit);
+        console.log('new mobile cell size', cellSize);
 
         canvas.width = cellSize * minCellsFit;
         canvas.height = cellSize * minCellsFit;
