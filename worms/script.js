@@ -925,7 +925,7 @@ document.addEventListener('mouseup', handleMouseUp, false);
 document.addEventListener("keydown", handleKeyInput);
 
 // Add touch event listeners with { passive: false }
-document.addEventListener('touchstart', handleTouchStart, { passive: false });
-document.addEventListener('touchmove', handleTouchMove, { passive: false });
-document.addEventListener('touchend', handleTouchEnd, { passive: false });
+canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
 
