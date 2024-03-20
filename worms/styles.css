@@ -30,7 +30,7 @@ canvas {
     font-size: 20px;
     font-family: 'Arial', sans-serif;
     position: absolute;
-    top: -30px;
+    top: 113px;
     left: 50%;
     transform: translateX(-50%);
 	width: 550px;
@@ -157,5 +157,8 @@ button:hover {
         object-fit: contain; /* Fit the content within the element's box */
     }
 
+    #score {
+        top: 82px !important;
+    }
     /* Styles for touchControls... */
 }
