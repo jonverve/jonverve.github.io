@@ -43,12 +43,12 @@
         <div class="player-controls p1">
             <div class="label" id="p1-label"><span id="p1-emoji" style="font-size:28px;vertical-align:middle;margin-right:6px"></span><span id="p1-name">Player 1</span></div>
             <div><kbd>A</kbd><kbd>D</kbd> Move · <kbd>W</kbd> Jump · <kbd>S</kbd> Shield/Drop/Airdodge</div>
-            <div><kbd>F</kbd> Jab · <kbd>G</kbd> Special · <kbd>H</kbd> Move 3 · <kbd>F</kbd>+<kbd>G</kbd>+<kbd>H</kbd> Ultimate</div>
+            <div><kbd>F</kbd> Jab · <kbd>G</kbd> Special · <kbd>H</kbd> Move 3 · <kbd>J</kbd> Ultimate</div>
         </div>
         <div class="player-controls p2">
             <div class="label" id="p2-label"><span id="p2-emoji" style="font-size:28px;vertical-align:middle;margin-right:6px"></span><span id="p2-name">Player 2</span></div>
             <div><kbd>←</kbd><kbd>→</kbd> Move · <kbd>↑</kbd> Jump · <kbd>↓</kbd> Shield/Drop/Airdodge</div>
-            <div><kbd>,</kbd> Jab · <kbd>.</kbd> Special · <kbd>/</kbd> Move 3 · <kbd>,</kbd>+<kbd>.</kbd>+<kbd>/</kbd> Ultimate</div>
+            <div><kbd>M</kbd> Jab · <kbd>,</kbd> Special · <kbd>.</kbd> Move 3 · <kbd>/</kbd> Ultimate</div>
         </div>
     </div>
     <div class="debug-toggle"><kbd>T</kbd> debug · <kbd>Y</kbd> stick figure · <kbd>R</kbd> reset · <kbd>ESC</kbd> char select · Ledge grab is automatic</div>
@@ -246,43 +246,43 @@
             desc: 'Strong melee. Big hitboxes. High knockback.',
             jab: {
                 name: 'Slash', damage: 9, startup: 3, active: 5, recovery: 8,
-                hitboxWidth: 55, hitboxHeight: 35, hitboxOffsetX: 40, hitboxOffsetY: -5,
+                hitboxWidth: 55, hitboxHeight: 41, hitboxOffsetX: 40, hitboxOffsetY: -8,
                 knockbackAngle: 45, baseKnockback: 210, knockbackGrowth: 3.2, hitstun: 12,
             },
             strong: {
                 name: 'Heavy Slash', damage: 18, startup: 12, active: 5, recovery: 20,
-                hitboxWidth: 70, hitboxHeight: 50, hitboxOffsetX: 45, hitboxOffsetY: -8,
+                hitboxWidth: 70, hitboxHeight: 56, hitboxOffsetX: 45, hitboxOffsetY: -11,
                 knockbackAngle: 48, baseKnockback: 380, knockbackGrowth: 6.0, hitstun: 20,
             },
             move3: {
                 name: 'Spin Attack', damage: 12, startup: 6, active: 8, recovery: 16,
-                hitboxWidth: 90, hitboxHeight: 70, hitboxOffsetX: 0, hitboxOffsetY: 0,
+                hitboxWidth: 90, hitboxHeight: 76, hitboxOffsetX: 0, hitboxOffsetY: -3,
                 knockbackAngle: 70, baseKnockback: 260, knockbackGrowth: 3.8, hitstun: 14,
             },
             airJab: {
                 name: 'Air Slash', damage: 11, startup: 4, active: 6, recovery: 10,
-                hitboxWidth: 55, hitboxHeight: 40, hitboxOffsetX: 35, hitboxOffsetY: 0,
+                hitboxWidth: 55, hitboxHeight: 46, hitboxOffsetX: 35, hitboxOffsetY: -3,
                 knockbackAngle: 55, baseKnockback: 230, knockbackGrowth: 3.5, hitstun: 14,
             },
             airStrong: {
                 name: 'Downward Cleave', damage: 16, startup: 8, active: 5, recovery: 22,
-                hitboxWidth: 50, hitboxHeight: 60, hitboxOffsetX: 20, hitboxOffsetY: 18,
+                hitboxWidth: 50, hitboxHeight: 66, hitboxOffsetX: 20, hitboxOffsetY: 15,
                 knockbackAngle: -80, baseKnockback: 300, knockbackGrowth: 5.0, hitstun: 18,
             },
             airMove3: {
                 name: 'Rising Slash', damage: 13, startup: 5, active: 6, recovery: 14,
-                hitboxWidth: 50, hitboxHeight: 55, hitboxOffsetX: 15, hitboxOffsetY: -20,
+                hitboxWidth: 50, hitboxHeight: 61, hitboxOffsetX: 15, hitboxOffsetY: -23,
                 knockbackAngle: 85, baseKnockback: 280, knockbackGrowth: 4.2, hitstun: 15,
             },
             move4: {
                 name: 'Blade Storm', damage: 22, startup: 14, active: 12, recovery: 24,
-                hitboxWidth: 110, hitboxHeight: 80, hitboxOffsetX: 0, hitboxOffsetY: 0,
+                hitboxWidth: 110, hitboxHeight: 86, hitboxOffsetX: 0, hitboxOffsetY: -3,
                 knockbackAngle: 60, baseKnockback: 420, knockbackGrowth: 6.5, hitstun: 22,
                 multiHit: false, // single devastating hit
             },
             airMove4: {
                 name: 'Helm Breaker', damage: 20, startup: 10, active: 8, recovery: 20,
-                hitboxWidth: 60, hitboxHeight: 80, hitboxOffsetX: 10, hitboxOffsetY: 15,
+                hitboxWidth: 60, hitboxHeight: 86, hitboxOffsetX: 10, hitboxOffsetY: 12,
                 knockbackAngle: -85, baseKnockback: 380, knockbackGrowth: 5.5, hitstun: 20,
                 slamDown: true, // plunge downward during active frames
             },
@@ -292,7 +292,7 @@
             desc: 'Fast arrows. Quick melee. Zoning game.',
             jab: {
                 name: 'Quick Strike', damage: 6, startup: 2, active: 4, recovery: 6,
-                hitboxWidth: 40, hitboxHeight: 28, hitboxOffsetX: 32, hitboxOffsetY: -3,
+                hitboxWidth: 40, hitboxHeight: 34, hitboxOffsetX: 32, hitboxOffsetY: -6,
                 knockbackAngle: 40, baseKnockback: 160, knockbackGrowth: 2.0, hitstun: 8,
             },
             strong: {
@@ -311,7 +311,7 @@
             },
             airJab: {
                 name: 'Air Kick', damage: 7, startup: 3, active: 5, recovery: 8,
-                hitboxWidth: 42, hitboxHeight: 32, hitboxOffsetX: 28, hitboxOffsetY: 0,
+                hitboxWidth: 42, hitboxHeight: 38, hitboxOffsetX: 28, hitboxOffsetY: -3,
                 knockbackAngle: 50, baseKnockback: 170, knockbackGrowth: 2.5, hitstun: 10,
             },
             airStrong: {
@@ -351,7 +351,7 @@
             desc: 'Powerful magic. Slow startup. Big projectiles.',
             jab: {
                 name: 'Staff Poke', damage: 5, startup: 4, active: 4, recovery: 7,
-                hitboxWidth: 38, hitboxHeight: 25, hitboxOffsetX: 34, hitboxOffsetY: -2,
+                hitboxWidth: 38, hitboxHeight: 31, hitboxOffsetX: 34, hitboxOffsetY: -5,
                 knockbackAngle: 35, baseKnockback: 140, knockbackGrowth: 1.8, hitstun: 8,
             },
             strong: {
@@ -371,7 +371,7 @@
             },
             airJab: {
                 name: 'Magic Burst', damage: 8, startup: 5, active: 5, recovery: 9,
-                hitboxWidth: 45, hitboxHeight: 45, hitboxOffsetX: 20, hitboxOffsetY: 0,
+                hitboxWidth: 45, hitboxHeight: 51, hitboxOffsetX: 20, hitboxOffsetY: -3,
                 knockbackAngle: 60, baseKnockback: 200, knockbackGrowth: 3.0, hitstun: 12,
             },
             airStrong: {
@@ -384,13 +384,13 @@
             },
             airMove3: {
                 name: 'Blink Burst', damage: 10, startup: 8, active: 6, recovery: 12,
-                hitboxWidth: 55, hitboxHeight: 55, hitboxOffsetX: 60, hitboxOffsetY: 0,
+                hitboxWidth: 55, hitboxHeight: 61, hitboxOffsetX: 60, hitboxOffsetY: -3,
                 knockbackAngle: 50, baseKnockback: 220, knockbackGrowth: 3.5, hitstun: 13,
                 teleport: 80,
             },
             move4: {
                 name: 'Arcane Nova', damage: 24, startup: 22, active: 8, recovery: 26,
-                hitboxWidth: 140, hitboxHeight: 140, hitboxOffsetX: 0, hitboxOffsetY: 0,
+                hitboxWidth: 140, hitboxHeight: 146, hitboxOffsetX: 0, hitboxOffsetY: -3,
                 knockbackAngle: 65, baseKnockback: 440, knockbackGrowth: 6.0, hitstun: 22,
             },
             airMove4: {
@@ -406,7 +406,7 @@
             desc: 'Lasso pulls foes in. Pistol zones. Brawler spirit.',
             jab: {
                 name: 'Haymaker', damage: 8, startup: 3, active: 4, recovery: 9,
-                hitboxWidth: 45, hitboxHeight: 30, hitboxOffsetX: 35, hitboxOffsetY: -3,
+                hitboxWidth: 45, hitboxHeight: 36, hitboxOffsetX: 35, hitboxOffsetY: -6,
                 knockbackAngle: 35, baseKnockback: 190, knockbackGrowth: 2.8, hitstun: 10,
             },
             strong: {
@@ -426,7 +426,7 @@
             },
             airJab: {
                 name: 'Boot Kick', damage: 7, startup: 3, active: 5, recovery: 7,
-                hitboxWidth: 40, hitboxHeight: 35, hitboxOffsetX: 30, hitboxOffsetY: 5,
+                hitboxWidth: 40, hitboxHeight: 41, hitboxOffsetX: 30, hitboxOffsetY: 2,
                 knockbackAngle: 45, baseKnockback: 160, knockbackGrowth: 2.2, hitstun: 9,
             },
             airStrong: {
@@ -466,19 +466,19 @@
             desc: 'Super strength. Laser eyes. Can fly. Freeze breath.',
             jab: {
                 name: 'Superpunch', damage: 12, startup: 4, active: 4, recovery: 10,
-                hitboxWidth: 50, hitboxHeight: 35, hitboxOffsetX: 38, hitboxOffsetY: -3,
+                hitboxWidth: 50, hitboxHeight: 41, hitboxOffsetX: 38, hitboxOffsetY: -6,
                 knockbackAngle: 40, baseKnockback: 250, knockbackGrowth: 3.5, hitstun: 13,
             },
             strong: {
-                name: 'Laser Vision', damage: 10, startup: 10, active: 3, recovery: 14,
+                name: 'Laser Vision', damage: 10, startup: 10, active: 3, recovery: 18,
                 projectile: true,
-                projSpeed: 750, projWidth: 30, projHeight: 4,
+                projSpeed: 750, projWidth: 30, projHeight: 14,
                 projMaxDist: 550, projGravity: 0, projMaxCount: 2,
                 knockbackAngle: 20, baseKnockback: 200, knockbackGrowth: 2.8, hitstun: 10,
             },
             move3: {
                 name: 'Fly', damage: 14, startup: 4, active: 10, recovery: 14,
-                hitboxWidth: 45, hitboxHeight: 60, hitboxOffsetX: 0, hitboxOffsetY: -30,
+                hitboxWidth: 45, hitboxHeight: 66, hitboxOffsetX: 0, hitboxOffsetY: -33,
                 knockbackAngle: 85, baseKnockback: 300, knockbackGrowth: 4.0, hitstun: 14,
                 flyUp: true, // Special: launches fighter upward during active frames
             },
@@ -492,20 +492,20 @@
             },
             airJab: {
                 name: 'Sky Strike', damage: 11, startup: 3, active: 5, recovery: 9,
-                hitboxWidth: 48, hitboxHeight: 40, hitboxOffsetX: 32, hitboxOffsetY: 0,
+                hitboxWidth: 48, hitboxHeight: 46, hitboxOffsetX: 32, hitboxOffsetY: -3,
                 knockbackAngle: 50, baseKnockback: 220, knockbackGrowth: 3.2, hitstun: 12,
             },
             airStrong: {
-                name: 'Heat Beam', damage: 9, startup: 8, active: 3, recovery: 14,
+                name: 'Heat Beam', damage: 9, startup: 8, active: 3, recovery: 18,
                 projectile: true,
-                projSpeed: 700, projWidth: 28, projHeight: 4,
+                projSpeed: 700, projWidth: 28, projHeight: 14,
                 projMaxDist: 500, projGravity: 0, projMaxCount: 2,
                 projAngle: -25,
                 knockbackAngle: -35, baseKnockback: 190, knockbackGrowth: 2.5, hitstun: 10,
             },
             airMove3: {
                 name: 'Soaring Uppercut', damage: 15, startup: 5, active: 8, recovery: 16,
-                hitboxWidth: 45, hitboxHeight: 65, hitboxOffsetX: 0, hitboxOffsetY: -25,
+                hitboxWidth: 45, hitboxHeight: 71, hitboxOffsetX: 0, hitboxOffsetY: -28,
                 knockbackAngle: 80, baseKnockback: 320, knockbackGrowth: 4.5, hitstun: 16,
                 flyUp: true,
             },
@@ -523,48 +523,48 @@
             desc: 'Corrupted boss energy. Huge hitboxes, slow speed. Every hit shakes the screen.',
             jab: {
                 name: 'Ratio', damage: 11, startup: 10, active: 4, recovery: 20,
-                hitboxWidth: 44, hitboxHeight: 34, hitboxOffsetX: 36, hitboxOffsetY: -10,
+                hitboxWidth: 44, hitboxHeight: 40, hitboxOffsetX: 36, hitboxOffsetY: -13,
                 knockbackAngle: 80, baseKnockback: 240, knockbackGrowth: 3.8, hitstun: 14,
                 screenShake: true, deathEmoji: true,
             },
             strong: {
                 name: 'Seismic', damage: 10, startup: 22, active: 5, recovery: 30,
-                hitboxWidth: 180, hitboxHeight: 18, hitboxOffsetX: 0, hitboxOffsetY: 26,
+                hitboxWidth: 180, hitboxHeight: 24, hitboxOffsetX: 0, hitboxOffsetY: 23,
                 knockbackAngle: 55, baseKnockback: 180, knockbackGrowth: 2.8, hitstun: 12,
                 groundOnly: true, screenShake: true,
             },
             move3: {
                 name: 'No Cap Rush', damage: 9, startup: 8, active: 16, recovery: 24,
-                hitboxWidth: 48, hitboxHeight: 58, hitboxOffsetX: 28, hitboxOffsetY: 0,
+                hitboxWidth: 48, hitboxHeight: 64, hitboxOffsetX: 28, hitboxOffsetY: -3,
                 knockbackAngle: 20, baseKnockback: 190, knockbackGrowth: 2.8, hitstun: 8,
                 chargeThrough: true,
             },
             airJab: {
                 name: 'Aerial Smash', damage: 10, startup: 8, active: 5, recovery: 18,
-                hitboxWidth: 48, hitboxHeight: 40, hitboxOffsetX: 32, hitboxOffsetY: -4,
+                hitboxWidth: 48, hitboxHeight: 46, hitboxOffsetX: 32, hitboxOffsetY: -7,
                 knockbackAngle: 55, baseKnockback: 210, knockbackGrowth: 3.2, hitstun: 12,
                 screenShake: true,
             },
             airStrong: {
                 name: 'Overhead Pound', damage: 13, startup: 12, active: 4, recovery: 24,
-                hitboxWidth: 52, hitboxHeight: 48, hitboxOffsetX: 10, hitboxOffsetY: 16,
+                hitboxWidth: 52, hitboxHeight: 54, hitboxOffsetX: 10, hitboxOffsetY: 13,
                 knockbackAngle: -70, baseKnockback: 240, knockbackGrowth: 3.8, hitstun: 16,
                 slamDown: true, screenShake: true,
             },
             airMove3: {
                 name: 'Fist Drop', damage: 8, startup: 5, active: 6, recovery: 16,
-                hitboxWidth: 40, hitboxHeight: 44, hitboxOffsetX: 18, hitboxOffsetY: 14,
+                hitboxWidth: 40, hitboxHeight: 50, hitboxOffsetX: 18, hitboxOffsetY: 11,
                 knockbackAngle: -55, baseKnockback: 160, knockbackGrowth: 2.6, hitstun: 10,
             },
             move4: {
                 name: 'Griddy Drop', damage: 20, startup: 22, active: 8, recovery: 30,
-                hitboxWidth: 100, hitboxHeight: 70, hitboxOffsetX: 0, hitboxOffsetY: 18,
+                hitboxWidth: 100, hitboxHeight: 76, hitboxOffsetX: 0, hitboxOffsetY: 15,
                 knockbackAngle: 60, baseKnockback: 340, knockbackGrowth: 5.2, hitstun: 20,
                 flyUp: true, slamDown: true, screenShake: true,
             },
             airMove4: {
                 name: 'Wrecking Ball', damage: 16, startup: 16, active: 6, recovery: 26,
-                hitboxWidth: 80, hitboxHeight: 80, hitboxOffsetX: 0, hitboxOffsetY: 0,
+                hitboxWidth: 80, hitboxHeight: 86, hitboxOffsetX: 0, hitboxOffsetY: -3,
                 knockbackAngle: 50, baseKnockback: 290, knockbackGrowth: 4.2, hitstun: 18,
                 screenShake: true,
             },
@@ -574,12 +574,12 @@
             desc: '🦅 Air-dominant predator. True spike. Best aerial coverage. Worst ground game.',
             jab: {
                 name: 'Talon Rake', damage: 7, startup: 3, active: 5, recovery: 7,
-                hitboxWidth: 42, hitboxHeight: 38, hitboxOffsetX: 28, hitboxOffsetY: 12,
+                hitboxWidth: 42, hitboxHeight: 44, hitboxOffsetX: 28, hitboxOffsetY: 9,
                 knockbackAngle: -35, baseKnockback: 170, knockbackGrowth: 2.4, hitstun: 9,
             },
             strong: {
                 name: 'Dive Bomb', damage: 15, startup: 10, active: 6, recovery: 26,
-                hitboxWidth: 45, hitboxHeight: 55, hitboxOffsetX: 12, hitboxOffsetY: 22,
+                hitboxWidth: 45, hitboxHeight: 61, hitboxOffsetX: 12, hitboxOffsetY: 19,
                 knockbackAngle: -85, baseKnockback: 320, knockbackGrowth: 5.0, hitstun: 18,
                 slamDown: true, divePunishOnMiss: true,
             },
@@ -593,12 +593,12 @@
             },
             airJab: {
                 name: 'Wing Slash', damage: 8, startup: 3, active: 6, recovery: 8,
-                hitboxWidth: 55, hitboxHeight: 40, hitboxOffsetX: 22, hitboxOffsetY: -2,
+                hitboxWidth: 55, hitboxHeight: 46, hitboxOffsetX: 22, hitboxOffsetY: -5,
                 knockbackAngle: 45, baseKnockback: 190, knockbackGrowth: 2.8, hitstun: 10,
             },
             airStrong: {
                 name: 'Talon Spike', damage: 13, startup: 6, active: 5, recovery: 14,
-                hitboxWidth: 38, hitboxHeight: 45, hitboxOffsetX: 15, hitboxOffsetY: 22,
+                hitboxWidth: 38, hitboxHeight: 51, hitboxOffsetX: 15, hitboxOffsetY: 19,
                 knockbackAngle: -90, baseKnockback: 300, knockbackGrowth: 4.8, hitstun: 16,
             },
             airMove3: {
@@ -609,13 +609,13 @@
             },
             move4: {
                 name: 'Death Spiral', damage: 24, startup: 20, active: 8, recovery: 22,
-                hitboxWidth: 55, hitboxHeight: 55, hitboxOffsetX: 0, hitboxOffsetY: 0,
+                hitboxWidth: 55, hitboxHeight: 61, hitboxOffsetX: 0, hitboxOffsetY: -3,
                 knockbackAngle: -88, baseKnockback: 440, knockbackGrowth: 6.5, hitstun: 24,
                 flyUp: true, slamDown: true,
             },
             airMove4: {
                 name: 'Death Spiral', damage: 24, startup: 16, active: 8, recovery: 22,
-                hitboxWidth: 55, hitboxHeight: 55, hitboxOffsetX: 0, hitboxOffsetY: 0,
+                hitboxWidth: 55, hitboxHeight: 61, hitboxOffsetX: 0, hitboxOffsetY: -3,
                 knockbackAngle: -88, baseKnockback: 440, knockbackGrowth: 6.5, hitstun: 24,
                 slamDown: true,
             },
@@ -5511,14 +5511,9 @@
         }
         handleAttackInput(cursors) {
             const air = !this.isGrounded;
-            // Move4: all three attack buttons held simultaneously — consume whichever triggered it
-            if (cursors.attack.isDown && cursors.strong.isDown && cursors.move3.isDown) {
-                if (this.inputBuffer.consume('attack') ||
-                    this.inputBuffer.consume('strong') ||
-                    this.inputBuffer.consume('move3')) {
-                    this.startAttack(air ? this.charData.airMove4 : this.charData.move4);
-                    return;
-                }
+            if (this.inputBuffer.consume('move4')) {
+                this.startAttack(air ? this.charData.airMove4 : this.charData.move4);
+                return;
             }
             if (this.inputBuffer.consume('attack'))
                 this.startAttack(air ? this.charData.airJab : this.charData.jab);
@@ -5596,9 +5591,9 @@
                                 spX = handX + Math.cos(gunDir) * (gunBodyLen + barrelLen);
                                 spY = handY + Math.sin(gunDir) * (gunBodyLen + barrelLen);
                             } else if (this.charKey === 'superguy' && (atk.name === 'Laser Vision' || atk.name === 'Heat Beam')) {
-                                // Laser comes from eyes - upper portion of body
+                                // Laser comes from eyes
                                 spX = this.sprite.x + (22 * this.facing); // From eye level
-                                spY = this.sprite.y - 22; // Eyes are near top of body
+                                spY = this.sprite.y - 38; // Eye Y
                             } else {
                                 spX = this.sprite.x + (40 * this.facing); spY = this.sprite.y - 5;
                             }
@@ -5606,7 +5601,11 @@
                         const proj = new Projectile(this.scene, spX, spY, atk, this.playerIndex, this.facing, angle);
                         this.scene.projectiles.push(proj);
                     }
-                    this.scene.spawnParticles(this.sprite.x + 20 * this.facing, this.sprite.y - 5, 0xffcc00, 4);
+                    const sparkX = (this.charKey === 'superguy' && (atk.name === 'Laser Vision' || atk.name === 'Heat Beam'))
+                        ? this.sprite.x + 22 * this.facing : this.sprite.x + 20 * this.facing;
+                    const sparkY = (this.charKey === 'superguy' && (atk.name === 'Laser Vision' || atk.name === 'Heat Beam'))
+                        ? this.sprite.y - 38 : this.sprite.y - 5;
+                    this.scene.spawnParticles(sparkX, sparkY, 0xffcc00, 4);
                 }
                 this.hitboxActive = false;
                 if (this.attackFrame > total) { this.currentAttack = null; this.setState(this.isGrounded ? S.IDLE : S.AIRBORNE); }
@@ -5630,8 +5629,8 @@
                 } else if (this.attackFrame <= atk.startup + atk.active) {
                     this.hitboxActive = true;
                     this.hitboxRect.x = this.sprite.x + (atk.hitboxOffsetX * this.facing);
-                    this.hitboxRect.y = this.sprite.y + atk.hitboxOffsetY;
-                    this.hitboxRect.w = atk.hitboxWidth; this.hitboxRect.h = atk.hitboxHeight;
+                    this.hitboxRect.y = this.sprite.y + atk.hitboxOffsetY - 3;
+                    this.hitboxRect.w = atk.hitboxWidth; this.hitboxRect.h = atk.hitboxHeight + 6;
                 } else if (this.attackFrame <= total) {
                     this.hitboxActive = false;
                 } else {
@@ -5646,7 +5645,7 @@
                         // Inject a synthetic dive attack so hitbox stays active during plunge
                         this.currentAttack = {
                             name: 'DivePlunge', damage: 9, startup: 0, active: 60, recovery: 4,
-                            hitboxWidth: 38, hitboxHeight: 38, hitboxOffsetX: 18, hitboxOffsetY: 16,
+                            hitboxWidth: 38, hitboxHeight: 44, hitboxOffsetX: 18, hitboxOffsetY: 13,
                             knockbackAngle: -60, baseKnockback: 220, knockbackGrowth: 3.2, hitstun: 12,
                             _divePlunge: true,
                         };
@@ -6444,16 +6443,17 @@
                 left: this.input.keyboard.addKey('A'), right: this.input.keyboard.addKey('D'),
                 up: this.input.keyboard.addKey('W'), down: this.input.keyboard.addKey('S'),
                 attack: this.input.keyboard.addKey('F'), strong: this.input.keyboard.addKey('G'),
-                move3: this.input.keyboard.addKey('H'),
+                move3: this.input.keyboard.addKey('H'), ultimate: this.input.keyboard.addKey('J'),
             };
             this.p2Keys = {
                 left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
                 right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
                 up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
                 down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
-                attack: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.COMMA),
-                strong: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.PERIOD),
-                move3: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FORWARD_SLASH),
+                attack: this.input.keyboard.addKey('M'),
+                strong: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.COMMA),
+                move3: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.PERIOD),
+                ultimate: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FORWARD_SLASH),
             };
 
             // Wire buffered inputs: event-driven press registration via Phaser key objects.
@@ -6464,7 +6464,8 @@
                 keys.up.on('down',     (e) => { if (e.repeat) return; fighter.inputBuffer.press('jump'); });
                 keys.attack.on('down', (e) => { if (e.repeat) return; fighter.inputBuffer.press('attack'); });
                 keys.strong.on('down', (e) => { if (e.repeat) return; fighter.inputBuffer.press('strong'); });
-                keys.move3.on('down',  (e) => { if (e.repeat) return; fighter.inputBuffer.press('move3'); });
+                keys.move3.on('down',    (e) => { if (e.repeat) return; fighter.inputBuffer.press('move3'); });
+                keys.ultimate.on('down', (e) => { if (e.repeat) return; fighter.inputBuffer.press('move4'); });
                 keys.down.on('down',   (e) => {
                     if (e.repeat) return;
                     fighter.inputBuffer.press('fastfall');
@@ -6577,8 +6578,8 @@
                 if (defender.state === S.DEAD || defender.state === S.SCREEN_SPLAT || defender.invincible > 0) continue;
 
                 if (rectsOverlap(proj.x, proj.y, proj.w, proj.h,
-                        defender.sprite.x, defender.sprite.y,
-                        FIGHTER_CONFIG.width, FIGHTER_CONFIG.height)) {
+                        defender.sprite.x, defender.sprite.y - 3,
+                        FIGHTER_CONFIG.width, FIGHTER_CONFIG.height + 6)) {
 
                     // Shield reflect
                     if (defender.state === S.SHIELD || defender.state === S.SHIELDSTUN) {
@@ -6615,8 +6616,8 @@
             if (defender.invincible > 0 || defender.state === S.DEAD || defender.state === S.SCREEN_SPLAT) return;
             const hb = attacker.hitboxRect;
             if (rectsOverlap(hb.x, hb.y, hb.w, hb.h,
-                    defender.sprite.x, defender.sprite.y,
-                    FIGHTER_CONFIG.width, FIGHTER_CONFIG.height)) {
+                    defender.sprite.x, defender.sprite.y - 3,
+                    FIGHTER_CONFIG.width, FIGHTER_CONFIG.height + 6)) {
                 attacker.hasHitThisAttack = true;
 
                 // ---- HIT STOP ----
@@ -6661,7 +6662,7 @@
                 if (f.state === S.DEAD || f.state === S.SCREEN_SPLAT) return;
                 const hbColor = i === 0 ? COLORS.p1Hitbox : COLORS.p2Hitbox;
                 this.debugGfx.lineStyle(1, COLORS.hurtbox, 0.4);
-                this.debugGfx.strokeRect(f.sprite.x - FIGHTER_CONFIG.width/2 - 2, f.sprite.y - FIGHTER_CONFIG.height/2 - 2, FIGHTER_CONFIG.width + 4, FIGHTER_CONFIG.height + 4);
+                this.debugGfx.strokeRect(f.sprite.x - FIGHTER_CONFIG.width/2 - 2, f.sprite.y - FIGHTER_CONFIG.height/2 - 2 - 6, FIGHTER_CONFIG.width + 4, FIGHTER_CONFIG.height + 4 + 6);
                 if (f.hitboxActive) {
                     const hb = f.hitboxRect;
                     this.debugGfx.fillStyle(hbColor, 0.3);
