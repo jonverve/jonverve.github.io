@@ -708,9 +708,10 @@
             return nearest;
         }
 
-        // Returns true if there is solid ground below the given X position.
-        // Used to avoid walking/jumping into pits.
-        _hasPlatformBelow(x) {
+        // Returns true if there is a platform whose X range covers x AND
+        // (if aboveY is given) whose surface is below aboveY.
+        // aboveY = CPU's current y; omit for grounded edge-scan (X-only is fine there).
+        _hasPlatformBelow(x, aboveY) {
             const allPlats = STAGE.allPlatforms || [
                 ...(STAGE.mainPlatform ? [STAGE.mainPlatform] : []),
                 ...(STAGE.splitPlatforms || []),
@@ -718,7 +719,10 @@
             ];
             for (const p of allPlats) {
                 const halfW = p.width / 2;
-                if (x >= p.x - halfW && x <= p.x + halfW) return true;
+                if (x < p.x - halfW || x > p.x + halfW) continue;
+                // If caller provides their Y, only count platforms that are at or below them
+                if (aboveY !== undefined && p.y < aboveY - 10) continue;
+                return true;
             }
             return false;
         }
@@ -728,11 +732,13 @@
         // Lookahead scales with difficulty — lower CPU is slightly less cautious
         // but still avoids obvious pits at all levels.
         _pitAheadInDirection(cpuX, dir) {
-            const lookahead = 20 + cpuDifficulty * 4; // LV1=24px, LV9=56px
-            const checkX = cpuX + dir * lookahead;
-            const onGroundNow = this._hasPlatformBelow(cpuX);
-            if (!onGroundNow) return false; // already airborne, let recovery logic handle it
-            return !this._hasPlatformBelow(checkX);
+            // Start scan close to feet; max scales with difficulty
+            // Minimum 32px so we don't trigger on the platform the CPU is standing on
+            const maxLook = 40 + cpuDifficulty * 4; // LV1=44, LV9=76
+            for (let d = 16; d <= maxLook; d += 6) {
+                if (!this._hasPlatformBelow(cpuX + dir * d)) return true;
+            }
+            return false;
         }
 
         _press(action) {
@@ -812,20 +818,20 @@
             }
 
             // ── RECOVERY ─────────────────────────────────────────────────────
-            const offLeft  = cpuX < BLAST_ZONES.left  + 200;
-            const offRight = cpuX > BLAST_ZONES.right - 200;
-            const offStage = !grounded && (offLeft || offRight || cpuY < 120 || cpuY > 520);
+            const offLeft  = cpuX < BLAST_ZONES.left  + 260;
+            const offRight = cpuX > BLAST_ZONES.right - 260;
+            const offStage = !grounded && (offLeft || offRight || cpuY < 120 || cpuY > 480);
             if (offStage) {
                 const toCenter = 512 - cpuX;
                 if (Math.abs(toCenter) > 20) this.vKeys[toCenter > 0 ? 'right' : 'left'].isDown = true;
                 if (cpu.jumpsRemaining > 0 && this.jumpCooldown <= 0) {
-                    this._press('jump'); this.jumpCooldown = 10;
+                    this._press('jump'); this.jumpCooldown = 8;
                 }
-                // At high levels, use move3 upward recovery if available
-                if (cpuDifficulty >= 6 && cpuY > 400 && cpu.state === S.AIRBORNE) {
+                // Use flyUp recovery if sinking
+                if (cpuY > 350 && cpu.state === S.AIRBORNE) {
                     const ch = CHARACTERS[cpu.charKey];
                     if (ch && ch.airMove3 && ch.airMove3.flyUp) { this._press('move3'); }
-                    else this._press('airdodge');
+                    else if (cpuDifficulty >= 4) this._press('airdodge');
                 }
                 return;
             }
@@ -951,7 +957,10 @@
 
             // ── RETREAT ───────────────────────────────────────────────────────
             if (this.retreatFrames > 0) {
-                this.vKeys[dx > 0 ? 'left' : 'right'].isDown = true;
+                const retreatDir = dx > 0 ? -1 : 1;
+                if (!grounded || !this._pitAheadInDirection(cpuX, retreatDir)) {
+                    this.vKeys[retreatDir > 0 ? 'right' : 'left'].isDown = true;
+                }
                 return;
             }
 
@@ -963,50 +972,98 @@
 
             // Pit/gap awareness — direction toward opponent
             const moveDir = dx > 0 ? 1 : -1;
-            const pitAhead = grounded && this._pitAheadInDirection(cpuX, moveDir);
-            // When a pit is between CPU and opponent, jump over rather than walk in
-            // At all difficulty levels: don't walk into a gap. Instead, jump.
-            // At higher levels: also choose a better approach route.
-            if (pitAhead && grounded && !closeRange) {
-                // Jump over the gap toward the opponent — run and jump for large gaps
-                this._faceOpp(dx);
-                if (this.jumpCooldown <= 0) {
-                    this._press('jump');
-                    this.jumpCooldown = cfg.jumpFreq;
+            const pitAhead  = grounded && this._pitAheadInDirection(cpuX, moveDir);
+            const pitBehind = grounded && this._pitAheadInDirection(cpuX, -moveDir);
+
+            // ── PIT-FALL DETECTOR ─────────────────────────────────────────────
+            // Log once when CPU drops below the lowest platform surface — indicates a real fall-in
+            const stageFloorY = STAGE.mainPlatform ? STAGE.mainPlatform.y : 520;
+            const belowFloor = cpuY > stageFloorY + 30;
+            if (belowFloor && !this._wasBelow) {
+                console.warn(`[PIT-FALL] CPU fell below stage floor! x=${Math.round(cpuX)} y=${Math.round(cpuY)} grounded=${grounded} jumps=${cpu.jumpsRemaining} vY=${Math.round(cpu.body?.velocity?.y||0)} hasPlatBelow=${this._hasPlatformBelow(cpuX,cpuY)}`);
+            }
+            this._wasBelow = belowFloor;
+
+            if (this.frame % 60 === 0) {
+                const branch = pitAhead ? (pitBehind ? 'PIT_BOTH' : 'PIT_AHEAD')
+                             : (!grounded && !this._hasPlatformBelow(cpuX, cpuY)) ? 'AIR_GAP'
+                             : !closeRange ? (wantsApproach ? 'APPROACH' : 'IDLE')
+                             : meleeRange ? 'MELEE' : 'CLOSE';
+                console.log(
+                    `[CPU f=${this.frame}] x=${Math.round(cpuX)} y=${Math.round(cpuY)}`,
+                    `gr=${grounded ? 1:0} adx=${Math.round(adx)} dy=${Math.round(dy)}`,
+                    `pitA=${pitAhead?1:0} pitB=${pitBehind?1:0}`,
+                    `jumps=${cpu.jumpsRemaining} vY=${Math.round(cpu.body?.velocity?.y||0)}`,
+                    `jCd=${this.jumpCooldown} aCd=${this.actionCooldown}`,
+                    `→ ${branch}`
+                );
+            }
+
+            if (pitAhead && grounded) {
+                // NEVER walk toward the pit.
+                // Case A: pit ahead only — back up, then run-jump over
+                // Case B: pit both directions (narrow platform) — just jump across toward opp
+                if (!pitBehind) {
+                    // Back away from the pit edge (away from moveDir = toward -moveDir)
+                    this.vKeys[moveDir > 0 ? 'left' : 'right'].isDown = true;
+                    // Run-jump: back up a bit then jump toward opponent
+                    const safeToJump = this._hasPlatformBelow(cpuX - moveDir * 28);
+                    if (safeToJump && this.jumpCooldown <= 0 && !closeRange) {
+                        this._press('jump');
+                        this.jumpCooldown = cfg.jumpFreq;
+                        this.vKeys[moveDir > 0 ? 'right' : 'left'].isDown = true;
+                    }
+                } else {
+                    // Trapped on a narrow platform — just jump directly toward opponent
+                    this._faceOpp(dx);
+                    if (this.jumpCooldown <= 0) {
+                        this._press('jump');
+                        this.jumpCooldown = cfg.jumpFreq;
+                        this.vKeys[moveDir > 0 ? 'right' : 'left'].isDown = true;
+                    }
                 }
-                // Also keep moving toward opponent while jumping (run-jump)
-                this.vKeys[moveDir > 0 ? 'right' : 'left'].isDown = true;
-                // Skip normal approach so we don't overwrite with a walk command
-            } else if (!grounded && !this._hasPlatformBelow(cpuX)) {
-                // ── Airborne over a gap — actively steer toward nearest safe platform ──
-                // This is the key fix: don't just drift, actively fly toward a platform
+            } else if (!grounded && !this._hasPlatformBelow(cpuX, cpuY)) {
+                // ── Airborne over a gap — aggressively recover to nearest platform ──
                 const nearPlatLeft  = this._nearestPlatformInDirection(cpuX, cpuY, -1);
                 const nearPlatRight = this._nearestPlatformInDirection(cpuX, cpuY,  1);
-                // Pick the platform closest to opponent, or just the nearest one
-                let targetDir = moveDir; // default: toward opponent
+                let targetDir = moveDir;
                 if (nearPlatLeft && nearPlatRight) {
-                    // Both sides have platforms — pick the one closer to opponent
-                    targetDir = moveDir;
+                    const distL = Math.abs(nearPlatLeft.x - cpuX);
+                    const distR = Math.abs(nearPlatRight.x - cpuX);
+                    targetDir = distL < distR ? -1 : 1;
                 } else if (nearPlatLeft) {
                     targetDir = -1;
                 } else if (nearPlatRight) {
                     targetDir = 1;
                 }
                 this.vKeys[targetDir > 0 ? 'right' : 'left'].isDown = true;
-                // Use double jump if we're falling and still over a gap
-                if (cpu.body.velocity.y > 100 && cpu.jumpsRemaining > 0 && this.jumpCooldown <= 0) {
-                    this._press('jump'); this.jumpCooldown = 18;
+                // Use jump immediately when over a gap — don't wait
+                if (cpu.jumpsRemaining > 0 && this.jumpCooldown <= 0) {
+                    this._press('jump'); this.jumpCooldown = 14;
+                }
+                // Use flyUp recovery move if sinking and available
+                if (cpu.body.velocity.y > 80 && cpu.state === S.AIRBORNE) {
+                    const ch = CHARACTERS[cpu.charKey];
+                    if (ch && ch.airMove3 && ch.airMove3.flyUp) { this._press('move3'); }
                 }
             } else if (!closeRange && wantsApproach) {
-                this._faceOpp(dx);
-                // Jump to reach higher platforms / cross gaps
-                if (dy < -55 && this.jumpCooldown <= 0 && grounded) {
+                // When airborne, only walk toward opponent if we're over solid ground
+                // AND the edge in that direction is far enough away — prevents drifting off
+                const safeToWalk = grounded
+                    ? !pitAhead
+                    : this._hasPlatformBelow(cpuX + moveDir * 40, cpuY); // lookahead while airborne
+                if (safeToWalk) this._faceOpp(dx);
+                // Jump to reach higher platforms — only when grounded
+                if (dy < -55 && this.jumpCooldown <= 0 && grounded && !pitAhead) {
                     this._press('jump'); this.jumpCooldown = cfg.jumpFreq;
                 }
-                // High levels dash in with short-hop
-                if (cpuDifficulty >= 7 && adx > 120 && grounded && this.jumpCooldown <= 0 && Math.random() < 0.15) {
+                // High levels: dash-jump approach — only when grounded and no pit ahead
+                if (!pitAhead && cpuDifficulty >= 7 && adx > 120 && grounded && this.jumpCooldown <= 0 && Math.random() < 0.15) {
                     this._press('jump'); this.jumpCooldown = 20;
                 }
+            } else if (!closeRange && !wantsApproach && !pitAhead && grounded) {
+                // Inch forward only when grounded — airborne idle just lets physics settle
+                if (Math.random() < 0.4) this._faceOpp(dx);
             } else if (closeRange && !meleeRange && Math.random() < 0.25) {
                 // Space out slightly — but check we're not backing into a pit
                 const retreatDir = dx > 0 ? -1 : 1;
@@ -1020,7 +1077,7 @@
 
             // Fast-fall when airborne and below opponent — but only when over solid ground
             if (!grounded && dy > 50 && Math.random() < 0.45) {
-                if (this._hasPlatformBelow(cpuX)) {
+                if (this._hasPlatformBelow(cpuX, cpuY)) {
                     this._press('fastfall');
                 }
                 // (if over a gap, the gap-crossing block above handles steering)
@@ -1032,20 +1089,17 @@
             // ALWAYS face opponent before attacking
             if (grounded) {
                 if (meleeRange) {
-                    this._faceOpp(dx);  // ensure correct facing
+                    this._faceOpp(dx);
                     const roll = Math.random();
-                    // Kill confirm at high %
                     if (oppDmg > 90 && cpuDifficulty >= 5 && roll < 0.45) {
                         this._press('strong'); this.actionCooldown = 24;
                     } else if (oppDmg > 60 && cpuDifficulty >= 7 && roll < 0.3) {
-                        // Up-smash / spike attempt
                         this._press('move3'); this.actionCooldown = 22;
                     } else if (roll < cfg.comboChance) {
                         this._press('attack'); this.actionCooldown = 16;
                     } else if (roll < cfg.comboChance + 0.18) {
                         this._press('move3'); this.actionCooldown = 22;
                     }
-                    // High levels: combo follow-up — attack again immediately
                     if (cpuDifficulty >= 8 && Math.random() < 0.5) this.actionCooldown = Math.max(8, this.actionCooldown - 6);
                 } else if (farRange && Math.random() < cfg.projectileRate) {
                     const ch = CHARACTERS[cpu.charKey];
@@ -1055,16 +1109,15 @@
                         this._press(ch.strong.projectile ? 'strong' : 'move3');
                         this.actionCooldown = 36;
                     }
-                } else if (!closeRange && this.jumpCooldown <= 0 && Math.random() < 0.2) {
-                    this._press('jump'); this.jumpCooldown = cfg.jumpFreq;
+                    // No projectile: don't jump in place — just keep approaching (handled above)
                 }
+                // Only jump toward opponent when not blocked by a pit and actively approaching
             } else {
-                // Airborne
-                if (adx < 95 && Math.abs(dy) < 90) {
-                    this._faceOpp(dx);  // face before air attack
+                // Airborne — only attack when actually close to opponent
+                if (adx < 90 && Math.abs(dy) < 80) {
+                    this._faceOpp(dx);
                     const roll = Math.random();
                     if (roll < cfg.aggression * 0.7) {
-                        // Spike / dunk if above opponent at high levels
                         if (cpuDifficulty >= 6 && dy > 30 && Math.random() < 0.4) {
                             this._press('strong'); this.actionCooldown = 28;
                         } else if (roll < cfg.comboChance * 0.65) {
@@ -1074,6 +1127,7 @@
                         }
                     }
                 }
+                // Don't attack at all when far away airborne — use that time to move toward opp
                 if (oppAttacking && adx < 95 && Math.random() < cfg.DI * 0.55) this._press('airdodge');
             }
         }
@@ -1082,8 +1136,58 @@
 
 
     // ============================================================
-    // PROFILE SYSTEM (cookie-persisted)
+    // PROFILE SYSTEM (multi-layer persistence: Claude storage → localStorage → cookie)
     // ============================================================
+    const STORAGE_KEY = 'smash_profiles';
+
+    const StorageLayer = {
+        // ── Cookie helpers ──────────────────────────────────────────
+        cookieSet(key, val) {
+            try {
+                const enc = encodeURIComponent(val);
+                // 400-day expiry; SameSite=Lax for local use
+                document.cookie = `${key}=${enc};max-age=34560000;path=/;SameSite=Lax`;
+            } catch(e) {}
+        },
+        cookieGet(key) {
+            try {
+                const match = document.cookie.split(';').map(c => c.trim())
+                    .find(c => c.startsWith(key + '='));
+                return match ? decodeURIComponent(match.slice(key.length + 1)) : null;
+            } catch(e) { return null; }
+        },
+        // ── localStorage helpers ────────────────────────────────────
+        lsSet(key, val) {
+            try { localStorage.setItem(key, val); } catch(e) {}
+        },
+        lsGet(key) {
+            try { return localStorage.getItem(key); } catch(e) { return null; }
+        },
+        // ── Write to all layers ─────────────────────────────────────
+        async save(key, val) {
+            if (window.storage) {
+                try { await window.storage.set(key, val); } catch(e) {}
+            }
+            this.lsSet(key, val);
+            this.cookieSet(key, val);
+        },
+        // ── Read from first layer that has data ─────────────────────
+        async load(key) {
+            // 1. Claude artifact storage (most reliable in claude.ai)
+            if (window.storage) {
+                try {
+                    const r = await window.storage.get(key);
+                    if (r && r.value) return r.value;
+                } catch(e) {}
+            }
+            // 2. localStorage
+            const ls = this.lsGet(key);
+            if (ls) return ls;
+            // 3. Cookie fallback
+            return this.cookieGet(key);
+        },
+    };
+
     const PROFILES = {
         data: [], // Array of { name, wins, losses, chars: { swordsman: {played,wins,losses}, ... } }
         p1Name: 'Player 1',
@@ -1092,19 +1196,13 @@
         p2Handicap: 0,
         save() {
             const d = JSON.stringify(this.data);
-            if (window.storage) {
-                window.storage.set('smash_profiles', d).catch(() => {});
-            }
+            StorageLayer.save(STORAGE_KEY, d).catch(() => {});
         },
         async load() {
-            if (window.storage) {
-                try {
-                    const result = await window.storage.get('smash_profiles');
-                    if (result && result.value) {
-                        this.data = JSON.parse(result.value);
-                    }
-                } catch(e) { this.data = []; }
-            }
+            try {
+                const val = await StorageLayer.load(STORAGE_KEY);
+                if (val) this.data = JSON.parse(val);
+            } catch(e) { this.data = []; }
             // Ensure all profiles have entries for all characters + new stat fields
             this.data.forEach(p => {
                 if (!p.chars) p.chars = {};
@@ -1540,7 +1638,7 @@
                 position: 'absolute',
                 left: `${W/2 - boxW/2 + 20 + rect.left}px`,
                 top:  `${H/2 - boxH/2 + 52 + rect.top}px`,
-                width: `${boxW - 40 - 110}px`,
+                width: `${boxW - 40}px`,
                 height: `${boxH - 110}px`,
                 background: '#020810', color: '#44cc88',
                 border: '1px solid #224433', borderRadius: '4px',
@@ -1554,9 +1652,9 @@
             btn.textContent = 'Copy All';
             Object.assign(btn.style, {
                 position: 'absolute',
-                right: `${window.innerWidth - (W/2 + boxW/2 - 20) + rect.left + 34}px`,
-                top:  `${H/2 - boxH/2 + 52 + rect.top}px`,
-                width: '100px', height: '38px',
+                left: `${W/2 + boxW/2 - 37 - 100 + rect.left}px`,
+                top:  `${H/2 - boxH/2 + 8 + rect.top}px`,
+                width: '100px', height: '28px',
                 background: '#0a2a18', color: '#22dd88',
                 border: '1px solid #22aa66', borderRadius: '4px',
                 fontFamily: 'Orbitron, sans-serif', fontSize: '11px', fontWeight: 'bold',
@@ -1627,7 +1725,7 @@
                 position: 'absolute',
                 left: `${W/2 - boxW/2 + 20 + rect.left}px`,
                 top:  `${H/2 - boxH/2 + 68 + rect.top}px`,
-                width: `${boxW - 40 - 110}px`, height: `${boxH - 130}px`,
+                width: `${boxW - 40}px`, height: `${boxH - 130}px`,
                 background: '#020810', color: '#88bbff',
                 border: '1px solid #224466', borderRadius: '4px',
                 fontFamily: 'Share Tech Mono, monospace', fontSize: '11px',
@@ -1642,9 +1740,9 @@
             btn.textContent = 'Import';
             Object.assign(btn.style, {
                 position: 'absolute',
-                right: `${window.innerWidth - (W/2 + boxW/2 - 20) + rect.left + 34}px`,
-                top:  `${H/2 - boxH/2 + 68 + rect.top}px`,
-                width: '100px', height: '38px',
+                left: `${W/2 + boxW/2 - 37 - 100 + rect.left}px`,
+                top:  `${H/2 - boxH/2 + 8 + rect.top}px`,
+                width: '100px', height: '28px',
                 background: '#0a1a2a', color: '#44aaff',
                 border: '1px solid #2288ff', borderRadius: '4px',
                 fontFamily: 'Orbitron, sans-serif', fontSize: '11px', fontWeight: 'bold',
@@ -2288,7 +2386,7 @@
             this.drawCharStats();
 
             // Status
-            const CPU_DIFF_LABELS = ['','NOVICE','BEGINNER','CASUAL','INTERMEDIATE','STANDARD','ADVANCED','EXPERT','MASTER','GODLIKE'];
+            const CPU_DIFF_LABELS = ['','NOVICE','BEGINNER','CASUAL','INTERMEDIATE','STANDARD','ADVANCED','EXPERT','MASTER','LEGENDARY'];
             if (is1P) {
                 if (profiles.length < 1) {
                     this.statusTxt.setText('Add a profile to play');
@@ -3011,7 +3109,7 @@
             this.p1LockTxt.setText(this.p1Locked ? `✓ ${CHARACTERS[CHAR_KEYS[this.p1Sel]].name}` : 'Press F to lock');
             if (cpuEnabled) {
                 const cpuCharName = CHARACTERS[CHAR_KEYS[this.p2Sel]].name;
-                const CPU_DIFF_LABELS = ['','NOVICE','BEGINNER','CASUAL','INTERMEDIATE','STANDARD','ADVANCED','EXPERT','MASTER','GODLIKE'];
+                const CPU_DIFF_LABELS = ['','NOVICE','BEGINNER','CASUAL','INTERMEDIATE','STANDARD','ADVANCED','EXPERT','MASTER','LEGENDARY'];
                 const diffLabel = `LV${cpuDifficulty} ${CPU_DIFF_LABELS[cpuDifficulty]}`;
                 this.p2LockTxt.setText(this.cpuRandom ? `🤖 CPU — ${cpuCharName} (RANDOM)` : `🤖 CPU — ${cpuCharName}  ↑↓ char`);
                 this.p2LockTxt.setColor('#ff8844');
@@ -3079,7 +3177,7 @@
                 if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
                     const p1Key = CHAR_KEYS[this.p1Sel], p2Key = CHAR_KEYS[this.p2Sel];
                     setPlayerLabel(1, `${PROFILES.p1Name} (${CHARACTERS[p1Key].name})`);
-                    const CPU_DIFF_LABELS = ['','NOVICE','BEGINNER','CASUAL','INTERMEDIATE','STANDARD','ADVANCED','EXPERT','MASTER','GODLIKE'];
+                    const CPU_DIFF_LABELS = ['','NOVICE','BEGINNER','CASUAL','INTERMEDIATE','STANDARD','ADVANCED','EXPERT','MASTER','LEGENDARY'];
                     const p2Label = cpuEnabled
                         ? `${PROFILES.p2Name} (${CHARACTERS[p2Key].name}) LV${cpuDifficulty}`
                         : `${PROFILES.p2Name} (${CHARACTERS[p2Key].name})`;
@@ -5367,12 +5465,13 @@
 
             // SUPERGUY — cape still attached but limp, star emblem glows
             if (charKey === 'superguy') {
+                const splatCapeCol = this.playerIndex === 0 ? 0xcc2222 : 0x2244cc;
                 const capeLen = 24 * scale;
                 const capeEndX = neck.x - splatFacing * capeLen * squashX;
                 const capeEndY = neck.y + capeLen * 0.6 * squashY;
-                gfx.fillStyle(0xcc2222, 0.7);
+                gfx.fillStyle(splatCapeCol, 0.7);
                 gfx.fillTriangle(shL.x, shL.y, neck.x, neck.y, capeEndX, capeEndY);
-                gfx.lineStyle(3, 0xcc2222, 0.85);
+                gfx.lineStyle(3, splatCapeCol, 0.85);
                 gfx.lineBetween(neck.x, neck.y, capeEndX, capeEndY);
             }
 
@@ -5483,7 +5582,7 @@
             } else { this.body.velocity.x *= FIGHTER_CONFIG.airFriction; }
         }
         handleJump(cursors) {
-            if (this.inputBuffer.consume('jump')) { this.setState(S.JUMP_SQUAT); this.jumpsRemaining--; }
+            if (this.inputBuffer.consume('jump')) { this.setState(S.JUMP_SQUAT); this.jumpsRemaining = Math.max(0, this.jumpsRemaining - 1); }
         }
         handleAirJump(cursors) {
             if (this.inputBuffer.consume('jump') && this.jumpsRemaining > 0) {
@@ -5667,6 +5766,10 @@
             const dmg = atkData.damage * hMult;
             this.damage += dmg;
             this.comboCount++;
+            // ── DEBUG HIT LOG ──
+            const defLabel  = this.playerIndex === 1 ? 'CPU' : 'P1';
+            const atkLabel  = attackerIndex   === 0 ? 'P1'  : 'CPU';
+            console.log(`[HIT] ${atkLabel} → ${defLabel} | move="${atkData.name||'?'}" dmg=${dmg.toFixed(1)} total=${this.damage.toFixed(1)}% | pos=(${Math.round(this.sprite.x)},${Math.round(this.sprite.y)})`);
             // Accumulate damage stats for post-match recording
             if (attackerIndex === 0 && this.scene._p1DmgDealt !== undefined) this.scene._p1DmgDealt += dmg;
             if (attackerIndex === 1 && this.scene._p2DmgDealt !== undefined) this.scene._p2DmgDealt += dmg;
@@ -5802,6 +5905,7 @@
         onKO() {
             this.cleanupSplat();
             this.stocks--;
+            console.log(`[KO] ${this.playerIndex === 1 ? 'CPU' : 'P1'} KO'd | stocks left=${this.stocks} | pos=(${Math.round(this.sprite.x)},${Math.round(this.sprite.y)}) | dmg=${this.damage.toFixed(1)}%`);
             // Track smash for the player who scored the KO
             if (this.scene._p1Smashes !== undefined) {
                 if (this.playerIndex === 1) this.scene._p1Smashes++;  // p1 KO'd p2
@@ -7136,7 +7240,10 @@
 
                 if (charKey === 'superguy') {
                     // CAPE: wider, flowing from both shoulders
-                    const capeCol = 0xcc2222;
+                    // P1 = red cape, P2/CPU = blue cape
+                    const capeCol    = f.playerIndex === 0 ? 0xcc2222 : 0x2244cc;
+                    const capeHigh   = f.playerIndex === 0 ? 0xff4444 : 0x4466ff;
+                    const capeSheen  = f.playerIndex === 0 ? 0xff6666 : 0x6688ff;
                     const capeLen = 28 * scale; // Longer cape
                     // Cape attachment spans both shoulders for width
                     const capeTopX = neckX - facing * 6;
@@ -7166,13 +7273,13 @@
                         // Outline
                         gfx.lineStyle(4 - t * 1.5, capeCol, 0.9 - t * 0.1);
                         gfx.lineBetween(prevTopX, prevTopY, topNx, topNy);
-                        gfx.lineStyle(2, 0xff4444, 0.25);
+                        gfx.lineStyle(2, capeHigh, 0.25);
                         gfx.lineBetween(prevBotX, prevBotY, botNx, botNy);
                         prevTopX = topNx; prevTopY = topNy;
                         prevBotX = botNx; prevBotY = botNy;
                     }
                     // Cape bottom edge highlight
-                    gfx.lineStyle(1.5, 0xff6666, 0.4);
+                    gfx.lineStyle(1.5, capeSheen, 0.4);
                     gfx.lineBetween(prevTopX, prevTopY, prevBotX, prevBotY);
 
                     // LASER EYES during laser attacks
@@ -7457,6 +7564,11 @@
             if (!cpuEnabled) {
                 this.add.text(844, 523, hcStr(PROFILES.p2Handicap), {
                     fontFamily: 'Share Tech Mono, monospace', fontSize: '8px', color: '#aa2222',
+                }).setOrigin(0.5).setDepth(20);
+            } else {
+                const CPU_DIFF_LABELS = ['','NOVICE','BEGINNER','CASUAL','INTERMEDIATE','STANDARD','ADVANCED','EXPERT','MASTER','LEGENDARY'];
+                this.add.text(844, 523, `🤖 LV${cpuDifficulty} ${CPU_DIFF_LABELS[cpuDifficulty]}`, {
+                    fontFamily: 'Orbitron, sans-serif', fontSize: '11px', fontStyle: 'bold', color: '#ff6644',
                 }).setOrigin(0.5).setDepth(20);
             }
 
